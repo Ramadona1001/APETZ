@@ -118,6 +118,48 @@
                     <!-- .nk-menu-sub -->
                 </li>
 
+                <li class="nk-menu-item has-sub">
+                    <a href="#" class="nk-menu-link nk-menu-toggle">
+                        <span class="nk-menu-icon"><em class="icon ni ni-users"></em></span>
+                        <span class="nk-menu-text">{{ transWord('Products') }}</span>
+                    </a>
+                    <ul class="nk-menu-sub">
+                        @can('create_products')
+                        <li class="nk-menu-item">
+                            <a href="{{ route('create_products') }}" class="nk-menu-link"><span class="nk-menu-text">{{ transWord('New Product') }}</span></a>
+                        </li>
+                        @endcan
+
+                        @can('show_products')
+                        <li class="nk-menu-item">
+                            <a href="{{ route('products') }}" class="nk-menu-link"><span class="nk-menu-text">{{ transWord('All Products') }}</span></a>
+                        </li>
+                        @endcan
+                    </ul>
+                    <!-- .nk-menu-sub -->
+                </li>
+
+                <li class="nk-menu-item has-sub">
+                    <a href="#" class="nk-menu-link nk-menu-toggle">
+                        <span class="nk-menu-icon"><em class="icon ni ni-users"></em></span>
+                        <span class="nk-menu-text">{{ transWord('Orders') }}</span>
+                    </a>
+                    <ul class="nk-menu-sub">
+                        @can('create_orders')
+                        <li class="nk-menu-item">
+                            <a href="{{ route('create_orders') }}" class="nk-menu-link"><span class="nk-menu-text">{{ transWord('New Order') }}</span></a>
+                        </li>
+                        @endcan
+
+                        @can('show_orders')
+                        <li class="nk-menu-item">
+                            <a href="{{ route('orders') }}" class="nk-menu-link"><span class="nk-menu-text">{{ transWord('All Orders') }}</span></a>
+                        </li>
+                        @endcan
+                    </ul>
+                    <!-- .nk-menu-sub -->
+                </li>
+
 
                 <!-- .nk-menu-heading -->
                 <li class="nk-menu-item has-sub">

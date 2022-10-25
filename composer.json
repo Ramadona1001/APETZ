@@ -48,7 +48,9 @@
             "Pets\\": "app/Modules/Pets/",
             "UserFollow\\": "app/Modules/UserFollow/",
             "Blogs\\": "app/Modules/Blogs/",
-            "UserStories\\": "app/Modules/UserStories/"
+            "UserStories\\": "app/Modules/UserStories/",
+            "Products\\": "app/Modules/Products/",
+            "Orders\\": "app/Modules/Orders/"
 
 
         },

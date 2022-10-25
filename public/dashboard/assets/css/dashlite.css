@@ -37236,7 +37236,7 @@ span+.icon {
 }
 
 .invoice-desc {
-    width: 210px;
+    width: 228px;
     padding-top: 1.5rem;
 }
 
@@ -45188,5 +45188,15 @@ div.dataTables_wrapper div.dataTables_length .dark-mode select,
     margin-bottom: 5px;
 }
 
+.pro_img_card{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid white;
+    padding: 10px;
+    border-radius: 10px;
+    width: 100px;
+    height: 100px;
+}
 
 /*! END @iO */

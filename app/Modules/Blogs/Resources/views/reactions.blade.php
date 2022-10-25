@@ -45,7 +45,7 @@
                         <td>
                             <img src="{{ URL::asset('/').setPublic().'reactions/'.reactions()[$reaction->user_reaction].'.svg' }}" alt="" srcset="">
                         </td>
-                        <td>{{ $comment->created_at }}</td>
+                        <td>{{ $reaction->created_at }}</td>
                     </tr>
                     @endforeach
                 </tbody>

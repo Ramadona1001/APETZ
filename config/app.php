@@ -186,6 +186,8 @@ return [
         UserFollow\Providers\UserFollowServiceProvider::class,
         Blogs\Providers\BlogServiceProvider::class,
         UserStories\Providers\UserStoriesServiceProvider::class,
+        Products\Providers\ProductsServiceProvider::class,
+        Orders\Providers\OrdersServiceProvider::class,
 
     ],
 

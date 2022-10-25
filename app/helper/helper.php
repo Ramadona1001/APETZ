@@ -16,7 +16,10 @@ use Sessions\Models\SessionsRate;
 use Stichoza\GoogleTranslate\GoogleTranslate;
 use Spatie\Permission\Models\Permission;
 
-// use Auth;
+define("PHP_TAB", "\t");
+define("PHP_DOUBLE_TAB", "\t\t");
+define("PHP_TRIBLE_TAB", "\t\t\t");
+define("PHP_FOURTH_TAB", "\t\t\t\t");
 
 function BuildFields($name , $value = null , $type="text" ,$other = null){
     $lang = \Mcamara\LaravelLocalization\Facades\LaravelLocalization::getSupportedLanguagesKeys();
@@ -32,23 +35,25 @@ function BuildFields($name , $value = null , $type="text" ,$other = null){
     }
     if (count($lang) > 1) {
         foreach($lang as  $key => $lan){
+            $label = (str_contains($name,'_')) ? str_replace('_',' ',$name) : $name;
             $newValue = $value != null ? $value[$lan] : null;
             $out .='<div class="col-lg-6" style="margin-bottom:10px;">';
-            $out .='<label for="'.$name.'['.$lan.']" >'.ucfirst($name).' Language ['.$lan.']</label >';
+            $out .='<label for="'.$name.'['.$lan.']" >'.ucwords($label).' Language ['.$lan.']</label >';
             if($type != 'textarea'){
-                $out .='<input type = "'.$type.'" class="form-control"  name="'.$name.'['.$lan.']" id = "'.$name.'['.$lan.']" placeholder="'.$name.' in '.$lan.'" '.$others.' value="'.$newValue.'"  />';
+                $out .='<input type = "'.$type.'" class="form-control"  name="'.$name.'['.$lan.']" id = "'.$name.'['.$lan.']" placeholder="'.$label.' in '.$lan.'" '.$others.' value="'.$newValue.'"  />';
             }else{
                 $out .='<textarea name="'.$name.'['.$lan.']" id="'.$name.'['.$lan.']" class="form-control ckeditor">'.$newValue.'</textarea>';
             }
             $out .='</div>';
         }
     }else{
+        $label = (str_contains($name,'_')) ? str_replace('_',' ',$name) : $name;
         $lan = $lang[0];
         $newValue = $value != null ? $value[$lan] : null;
         $out .='<div class="col-lg-12" style="margin-bottom:10px;">';
-        $out .='<label for="'.$name.'" >'.ucfirst($name).'</label >';
+        $out .='<label for="'.$name.'" >'.ucwords($label).'</label >';
         if($type != 'textarea'){
-            $out .='<input type = "'.$type.'" class="form-control"  name="'.$name.'['.$lan.']" id = "'.$name.'" placeholder="'.$name.'" '.$others.' value="'.$newValue.'"  />';
+            $out .='<input type = "'.$type.'" class="form-control"  name="'.$name.'['.$lan.']" id = "'.$name.'" placeholder="'.$label.'" '.$others.' value="'.$newValue.'"  />';
         }else{
             $out .='<textarea name="'.$name.'['.$lan.']" id="'.$name.'" class="form-control ckeditor">'.$newValue.'</textarea>';
         }
@@ -1207,4 +1212,208 @@ function reactions()
         6=>'sad',
         7=>'angry',
     ];
+}
+
+function writeModel($module)
+{
+    $filename = app_path().'/Modules/' . $module .'/Models/'.$module.'.php';
+    $content = '<?php';
+
+    $content .= PHP_EOL.'namespace '.$module.'\Models;';
+    $content .= PHP_EOL.'use Illuminate\Database\Eloquent\Model;';
+    $content .= PHP_EOL.'use Illuminate\Http\Request;';
+    $content .= PHP_EOL.'use '.$module.'\Repositories\\'.$module.'Repository;';
+
+    $content .= PHP_EOL.PHP_EOL.'class '.$module.' extends Model';
+    $content .= PHP_EOL.'{';
+    $content .= PHP_EOL.'}';
+    file_put_contents($filename, $content);
+}
+
+function writeProviders($module)
+{
+    $filename = app_path().'/Modules/' . $module .'/Providers/'.$module.'ServiceProvider.php';
+    $content = '<?php';
+
+    $content .= PHP_EOL.'namespace '.$module.'\Providers;';
+    $content .= PHP_EOL.'use Illuminate\Support\ServiceProvider;';
+
+    $content .= PHP_EOL.PHP_EOL.'class '.$module.'ServiceProvider extends ServiceProvider';
+    $content .= PHP_EOL.'{';
+    $content .= PHP_EOL.PHP_TAB.'public function register(){';
+    $content .= PHP_EOL.PHP_TAB.'}';
+    $content .= PHP_EOL.PHP_TAB.'public function boot(){';
+    $content .= PHP_EOL.PHP_DOUBLE_TAB.'$ds = DIRECTORY_SEPARATOR;';
+    $content .= PHP_EOL.PHP_DOUBLE_TAB.'$module = "'.$module.'";';
+    $content .= PHP_EOL.PHP_DOUBLE_TAB.'$this->loadRoutesFrom(__DIR__.$ds."..".$ds."Routes".$ds."web.php");';
+    $content .= PHP_EOL.PHP_DOUBLE_TAB.'$this->loadMigrationsFrom(__DIR__.$ds."..".$ds."Database".$ds."migrations");';
+    $content .= PHP_EOL.PHP_DOUBLE_TAB.'$this->loadFactoriesFrom(__DIR__.$ds."..".$ds."Database".$ds."factories");';
+    $content .= PHP_EOL.PHP_DOUBLE_TAB.'$this->loadViewsFrom(__DIR__.$ds."..".$ds."Resources".$ds."views",$module);';
+    $content .= PHP_EOL.PHP_DOUBLE_TAB.'$this->loadTranslationsFrom(__DIR__.$ds."..".$ds."Resources".$ds."lang",$module);';
+    $content .= PHP_EOL.PHP_TAB.'}';
+    $content .= PHP_EOL.'}';
+    file_put_contents($filename, $content);
+}
+
+function writeRepoistories($module)
+{
+    $filename = app_path().'/Modules/' . $module .'/Repositories/'.$module.'Repository.php';
+    $content = '<?php';
+
+    $content .= PHP_EOL.'namespace '.$module.'\Repositories;';
+    $content .= PHP_EOL.'use '.$module.'\Models\\'.$module.';';
+
+    $content .= PHP_EOL.PHP_EOL.'class '.$module.'Repository implements '.$module.'RepositoryInterface';
+    $content .= PHP_EOL.'{';
+    $content .= PHP_EOL.'}';
+    file_put_contents($filename, $content);
+}
+
+function writeRepoistoriesInterface($module)
+{
+    $filename = app_path().'/Modules/' . $module .'/Repositories/'.$module.'RepositoryInterface.php';
+    $content = '<?php';
+
+    $content .= PHP_EOL.'namespace '.$module.'\Repositories;';
+
+    $content .= PHP_EOL.PHP_EOL.'interface '.$module.'RepositoryInterface';
+    $content .= PHP_EOL.'{';
+    $content .= PHP_EOL.'}';
+    file_put_contents($filename, $content);
+}
+
+function writeRequest($module)
+{
+    $filename = app_path().'/Modules/' . $module .'/Requests/'.$module.'Request.php';
+    $content = '<?php';
+
+    $content .= PHP_EOL.'namespace '.$module.'\Requests;';
+    $content .= PHP_EOL.'use Illuminate\Foundation\Http\FormRequest;';
+
+    $content .= PHP_EOL.PHP_EOL.'class '.$module.'Request extends FormRequest';
+    $content .= PHP_EOL.'{';
+        $content .= PHP_EOL.PHP_TAB.'public function authorize()';
+        $content .= PHP_EOL.PHP_TAB.'{';
+            $content .= PHP_EOL.PHP_DOUBLE_TAB.'return true;';
+            $content .= PHP_EOL.PHP_TAB.'}';
+
+            $content .= PHP_EOL.PHP_TAB.'public function rules()';
+            $content .= PHP_EOL.PHP_TAB.'{';
+            $content .= PHP_EOL.PHP_TAB.'}';
+
+            $content .= PHP_EOL.PHP_TAB.'public function messages()';
+            $content .= PHP_EOL.PHP_TAB.'{';
+                    $content .= PHP_EOL.PHP_DOUBLE_TAB.'return [];';
+            $content .= PHP_EOL.PHP_TAB.'}';
+    $content .= PHP_EOL.'}';
+    file_put_contents($filename, $content);
+}
+
+function writeRoutes($module)
+{
+    $filename = app_path().'/Modules/' . $module .'/Routes/'.'web.php';
+    $content = '<?php';
+
+    $content .= PHP_EOL.'use Illuminate\Support\Facades\Route;';
+    $content .= PHP_EOL.PHP_TAB.'Route::group(["middleware" => ["web","auth"]], function() {';
+    $content .= PHP_EOL.PHP_DOUBLE_TAB.'$namespace = "'.$module.'\Controllers";';
+    $content .= PHP_EOL.PHP_DOUBLE_TAB.'Route::namespace($namespace)->group(function () {';
+    $content .= PHP_EOL.PHP_TRIBLE_TAB.'Route::group(["prefix" => LaravelLocalization::setLocale(),"middleware" => [ "localeSessionRedirect", "localizationRedirect", "localeViewPath" ]], function(){';
+    $content .= PHP_EOL.PHP_FOURTH_TAB.'Route::prefix("backend/'.strtolower($module).'")->group(function () {';
+    $content .= PHP_EOL.PHP_FOURTH_TAB.'});';
+    $content .= PHP_EOL.PHP_TRIBLE_TAB.'});';
+    $content .= PHP_EOL.PHP_DOUBLE_TAB.'});';
+    $content .= PHP_EOL.PHP_TAB.'});';
+
+    file_put_contents($filename, $content);
+}
+
+
+function writeController($module)
+{
+    $small_repo = strtolower($module).'Repository';
+    $small_module = strtolower($module);
+
+    $filename = app_path().'/Modules/' . $module .'/Controllers/'.$module.'Controller.php';
+    $content = '<?php';
+
+    $content .= PHP_EOL.'namespace '.$module.'\Controllers;';
+    $content .= PHP_EOL.'use App\Http\Controllers\Controller;';
+    $content .= PHP_EOL.'use Illuminate\Http\Request;';
+    $content .= PHP_EOL.'use '.$module.'\\Requests\\'.$module.'Request;';
+    $content .= PHP_EOL.'use '.$module.'\Repositories\\'.$module.'Repository;';
+
+    $content .= PHP_EOL.PHP_EOL.'class '.$module.'Controller extends Controller';
+    $content .= PHP_EOL.'{';
+        $content .= PHP_EOL.PHP_TAB.'public $path;';
+        $content .= PHP_EOL.PHP_TAB.'private $'.$small_repo.';';
+
+        $content .= PHP_EOL.PHP_TAB.'public function __construct('.$module.'Repository $'.$small_repo.')';
+        $content .= PHP_EOL.PHP_TAB.'{';
+            $content .= PHP_EOL.PHP_DOUBLE_TAB.'$this->middleware("auth");';
+            $content .= PHP_EOL.PHP_DOUBLE_TAB.'$this->path = "'.$module.'::";';
+            $content .= PHP_EOL.PHP_DOUBLE_TAB.'$this->'.$small_repo.' = $'.$small_repo.';';
+        $content .= PHP_EOL.PHP_TAB.'}';
+
+        $content .= PHP_EOL.PHP_TAB.'public function index()';
+        $content .= PHP_EOL.PHP_TAB.'{';
+            $content .= PHP_EOL.PHP_DOUBLE_TAB.'hasPermissions("show_'.$small_module.'");';
+            $content .= PHP_EOL.PHP_DOUBLE_TAB.'$title = transWord("'.$module.'");';
+            $content .= PHP_EOL.PHP_DOUBLE_TAB.'$pages = [';
+                $content .= PHP_EOL.PHP_DOUBLE_TAB.'[transWord("'.$module.'"),"'.$small_module.'"]';
+            $content .= PHP_EOL.PHP_DOUBLE_TAB.'];';
+            $content .= PHP_EOL.PHP_DOUBLE_TAB.'$'.$small_module.' = $this->'.$small_repo.'->allData();';
+            $content .= PHP_EOL.PHP_DOUBLE_TAB.'return view($this->path."index",compact("'.$small_module.'","pages","title"));';
+        $content .= PHP_EOL.PHP_TAB.'}';
+
+        $content .= PHP_EOL.PHP_TAB.'public function create()';
+        $content .= PHP_EOL.PHP_TAB.'{';
+            $content .= PHP_EOL.PHP_DOUBLE_TAB.'hasPermissions("create_'.$small_module.'");';
+            $content .= PHP_EOL.PHP_DOUBLE_TAB.'$title = transWord("New '.$module.'");';
+            $content .= PHP_EOL.PHP_DOUBLE_TAB.'$pages = [';
+                $content .= PHP_EOL.PHP_DOUBLE_TAB.'[transWord("New '.$module.'"),"'.$small_module.'"]';
+            $content .= PHP_EOL.PHP_DOUBLE_TAB.'];';
+            $content .= PHP_EOL.PHP_DOUBLE_TAB.'return view($this->path."index",compact("pages","title"));';
+        $content .= PHP_EOL.PHP_TAB.'}';
+
+
+        $content .= PHP_EOL.PHP_TAB.'public function store('.$module.'Request $request)';
+        $content .= PHP_EOL.PHP_TAB.'{';
+            $content .= PHP_EOL.PHP_DOUBLE_TAB.'hasPermissions("create_'.$small_module.'");';
+            $content .= PHP_EOL.PHP_DOUBLE_TAB.'$this->'.$small_repo.'->saveData($request);';
+            $content .= PHP_EOL.PHP_DOUBLE_TAB.'return back()->with("success","");';
+        $content .= PHP_EOL.PHP_TAB.'}';
+
+
+        $content .= PHP_EOL.PHP_TAB.'public function edit($id)';
+        $content .= PHP_EOL.PHP_TAB.'{';
+            $content .= PHP_EOL.PHP_DOUBLE_TAB.'hasPermissions("update_'.$small_module.'");';
+            $content .= PHP_EOL.PHP_DOUBLE_TAB.'$id = Crypt::decrypt($id);';
+            $content .= PHP_EOL.PHP_DOUBLE_TAB.'$'.$small_module.' = $this->'.$small_repo.'->getDataId($id);';
+            $content .= PHP_EOL.PHP_DOUBLE_TAB.'$title = transWord("Update '.$module.' Data");';
+            $content .= PHP_EOL.PHP_DOUBLE_TAB.'$pages = [';
+                $content .= PHP_EOL.PHP_DOUBLE_TAB.'[transWord("Update '.$module.' Data"),"'.$small_module.'"]';
+            $content .= PHP_EOL.PHP_DOUBLE_TAB.'];';
+            $content .= PHP_EOL.PHP_DOUBLE_TAB.'return view($this->path."index",compact("'.$small_module.'","pages","title"));';
+        $content .= PHP_EOL.PHP_TAB.'}';
+
+        $content .= PHP_EOL.PHP_TAB.'public function update('.$module.'Request $request,$id)';
+        $content .= PHP_EOL.PHP_TAB.'{';
+            $content .= PHP_EOL.PHP_DOUBLE_TAB.'hasPermissions("update_'.$small_module.'");';
+            $content .= PHP_EOL.PHP_DOUBLE_TAB.'$id = Crypt::decrypt($id);';
+            $content .= PHP_EOL.PHP_DOUBLE_TAB.'$this->'.$small_repo.'->saveData($request,$id);';
+            $content .= PHP_EOL.PHP_DOUBLE_TAB.'return back()->with("success","");';
+        $content .= PHP_EOL.PHP_TAB.'}';
+
+        $content .= PHP_EOL.PHP_TAB.'public function destroy($id)';
+        $content .= PHP_EOL.PHP_TAB.'{';
+            $content .= PHP_EOL.PHP_DOUBLE_TAB.'hasPermissions("delete_'.$small_module.'");';
+            $content .= PHP_EOL.PHP_DOUBLE_TAB.'$id = Crypt::decrypt($id);';
+            $content .= PHP_EOL.PHP_DOUBLE_TAB.'$this->'.$small_repo.'->deleteData($id);';
+            $content .= PHP_EOL.PHP_DOUBLE_TAB.'return back()->with("success","");';
+        $content .= PHP_EOL.PHP_TAB.'}';
+
+
+    $content .= PHP_EOL.'}';
+    file_put_contents($filename, $content);
 }

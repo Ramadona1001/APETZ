@@ -78,7 +78,7 @@ class UserRepository implements UserRepositoryInterface
         File::makeDirectory($pathImage, $mode = 0777, true, true);
 
         if ($request->hasFile('avatar')){
-            if($user->avatar != 'avatar'){
+            if($user->avatar != 'avatar.png'){
                 $image_path = public_path($user->avatar);
                 if (File::exists($image_path)) {
                     File::delete($image_path);
@@ -104,7 +104,7 @@ class UserRepository implements UserRepositoryInterface
     public function deleteData($id)
     {
         $user = $this->getDataId($id);
-        if($user->avatar != 'avatar'){
+        if($user->avatar != 'avatar.png'){
             $image_path = public_path($user->avatar);
             if (File::exists($image_path)) {
                 File::delete($image_path);

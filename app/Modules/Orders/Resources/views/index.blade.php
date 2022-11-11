@@ -42,15 +42,15 @@
                             @endcan
                         </td>
                         <td>
-                            @foreach (json_decode($order->products) as $item)
+                            @foreach ($order->items as $item)
                                 <span class="badge badge-secondary">
-                                    {{ transWord('Product').' : '.$item->name.' - '.transWord('Price').' : '.$item->price.' - '.transWord('Quantity').' : '.$item->qty }}
+                                    {{ transWord('Product').' : '.getDataFromJsonByLanguage($item->product->product_name).' - '.transWord('Price').' : '.$item->product->price.' - '.transWord('Quantity').' : '.$item->qty }}
                                 </span>
                             @endforeach
                         </td>
 
-                        <td>{{ $order->total_amount }}</td>
-                        <td>{{ $order->status }}</td>
+                        <td>{{ $order->total }}</td>
+                        <td><span class="badge badge-secondary">{{ $order->status }}</span></td>
                         <td>
                             {{ $order->other_notes }}
                         </td>
@@ -58,26 +58,18 @@
                             {{ $order->created_at }}
                         </td>
                         <td class="nk-tb-col nk-tb-col-tools">
-                            <ul class="nk-tb-actions gx-1">
-                                <li>
-                                    <div class="drodown">
-                                        <a href="#" class="dropdown-toggle btn btn-icon btn-trigger" data-toggle="dropdown"><em class="icon ni ni-more-h"></em></a>
-                                        <div class="dropdown-menu dropdown-menu-right">
-                                            <ul class="link-list-opt no-bdr">
-                                                @can('show_products')
-                                                <li><a href="{{ route('edit_products',Crypt::encrypt($order->id)) }}"><em class="icon ni ni-edit-fill"></em><span>{{ transWord('Edit') }}</span></a></li>
-                                                @endcan
-                                                @can('show_orders')
-                                                <li><a href="{{ route('show_orders',Crypt::encrypt($order->id)) }}"><em class="icon ni ni-eye"></em><span>{{ transWord('Details') }}</span></a></li>
-                                                @endcan
-                                                @can('delete_products')
-                                                <li><a href="{{ route('destroy_products',Crypt::encrypt($order->id)) }}" onclick="return confirm('Are You Sure?')"><em class="icon ni ni-trash"></em><span>{{ transWord('Delete') }}</span></a></li>
-                                                @endcan
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
+                            @can('show_orders')
+                                <a class="btn btn-secondary btn-sm" href="{{ route('edit_orders',Crypt::encrypt($order->id)) }}"><em class="icon ni ni-edit-fill"></em><span>{{ transWord('Edit') }}</span></a>
+                            @endcan
+                            @can('show_orders')
+                                <a class="btn btn-secondary btn-sm" href="{{ route('show_orders',Crypt::encrypt($order->id)) }}"><em class="icon ni ni-eye"></em><span>{{ transWord('Details') }}</span></a>
+                            @endcan
+                            @can('delete_orders')
+                                <a class="btn btn-danger btn-sm" href="{{ route('destroy_orders',Crypt::encrypt($order->id)) }}" onclick="return confirm('Are You Sure?')"><em class="icon ni ni-trash"></em><span>{{ transWord('Delete') }}</span></a>
+                            @endcan
+                            @can('status_orders')
+                                @include('Orders::components.status',['order'=>$order])
+                            @endcan
                         </td>
                     </tr>
                     @endforeach

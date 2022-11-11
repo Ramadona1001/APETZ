@@ -37,18 +37,18 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (json_decode($invoice->products) as $item)
+                        @foreach ($invoice->items as $item)
                             <tr>
-                                <td>{{ $item->name }}</td>
-                                <td>{{ $item->qty }}</td>
-                                <td>{{ $item->price }}</td>
+                                <td>{{ getDataFromJsonByLanguage($item->product->product_name) }}</td>
+                                <td>{{ $item->product->qty }}</td>
+                                <td>{{ $item->product->price }}</td>
                                 <td>{{ $item->total }}</td>
                             </tr>
                         @endforeach
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="4">{{ transWord('Subtotal') }} : {{ $invoice->total_amount }}</td>
+                            <td colspan="4">{{ transWord('Subtotal') }} : {{ $invoice->total }}</td>
                         </tr>
                     </tfoot>
                 </table>

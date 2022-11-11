@@ -70,18 +70,19 @@ class OrdersController extends Controller
 	{
 		hasPermissions("update_orders");
 		$id = Crypt::decrypt($id);
-		$orders = $this->ordersRepository->getDataId($id);
+		$order = $this->ordersRepository->getDataId($id);
 		$title = transWord("Update Orders Data");
 		$pages = [
 		[transWord("Update Orders Data"),"orders"]
 		];
-		return view($this->path."edit",compact("orders","pages","title"));
+        $products = $this->ordersRepository->products();
+		return view($this->path."edit",compact("order","pages","title","products"));
 	}
-	public function update(OrdersRequest $request,$id)
+	public function update(Request $request,$id)
 	{
 		hasPermissions("update_orders");
 		$id = Crypt::decrypt($id);
-		$this->ordersRepository->saveData($request,$id);
+		$this->ordersRepository->updateData($request,$id);
 		return back()->with("success","");
 	}
 	public function destroy($id)
@@ -91,4 +92,26 @@ class OrdersController extends Controller
 		$this->ordersRepository->deleteData($id);
 		return back()->with("success","");
 	}
+
+    public function updateQuantity($item,Request $request)
+    {
+        $this->ordersRepository->updateOrderQty($item,$request);
+        return back()->with("success","");
+    }
+
+    public function deleteOrderItem($item)
+    {
+        $check = $this->ordersRepository->deleteOrderItem($item);
+        if ($check == 1) {
+            return back()->with("success","");
+        }else{
+            return redirect()->route('orders');
+        }
+    }
+
+    public function changeOrderStatus($order,$status)
+    {
+        $this->ordersRepository->changeOrderStatus($order,$status);
+        return back()->with("success","");
+    }
 }

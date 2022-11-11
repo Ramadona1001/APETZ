@@ -2,6 +2,7 @@
 namespace Orders\Repositories;
 
 use App\User;
+use Orders\Models\OrderItem;
 use Orders\Models\Orders;
 use Products\Models\Products;
 
@@ -14,6 +15,29 @@ class OrdersRepository implements OrdersRepositoryInterface
 
     public function getDataId($id){
         return Orders::findOrfail($id);
+    }
+
+    public function getItemDataId($id)
+    {
+        return OrderItem::findOrfail($id);
+    }
+
+    public function checkProductOrder($items,$product_id)
+    {
+        $item_id = 0;
+        foreach ($items as $item) {
+            if ($item->product_id == $product_id) {
+                $item_id =  $item->id;
+            }else{
+                $item_id = 0;
+            }
+        }
+        return $item_id;
+    }
+
+    public function getOrderItemsData($id)
+    {
+        return OrderItem::where('order_id',$id)->get();
     }
 
     public function products()
@@ -37,68 +61,80 @@ class OrdersRepository implements OrdersRepositoryInterface
 
     public function saveData($request)
     {
-        $items = [];$total = 0;
-        foreach ($request->products as $item) {
-            if ( $item['qty'] > 0) {
-                $items[] = [
-                    'id' => $item['id'],
-                    'price' => $item['price'],
-                    'name' => $item['name'],
-                    'qty' => $item['qty'],
-                    'total' => $item['price'] * $item['qty'],
-                ];
-                $total = $total + ($item['price'] * $item['qty']);
-            }
-        }
         $order = new Orders();
         $order->user_id = $request->user;
-        $order->products = json_encode($items);
-        $order->total_amount = $total;
         $order->other_notes = $request->notes;
         $order->save();
+
+        foreach ($request->products  as $product) {
+            if ( $product['qty'] > 0) {
+                $item = new OrderItem();
+                $item->order_id = $order->id;
+                $item->product_id = $product['id'];
+                $item->qty = $product['qty'];
+                $item->total = $product['qty'] * $product['price'];
+                $item->save();
+            }
+        }
     }
 
     public function updateData($request,$id)
     {
         $order = $this->getDataId($id);
+        $items = $this->getOrderItemsData($id);
 
-        $order->product_name = json_encode($request->product_name);
-        $order->product_descriptions = json_encode($request->product_descriptions);
-        $order->qty = $request->qty;
-        $order->price = $request->price;
-        $order->user_id = $request->user_id;
-        $order->publish = $request->publish;
-
-        $order->save();
-
-        $pathImage = public_path().'/uploads/backend/Orders/';
-        File::makeDirectory($pathImage, $mode = 0777, true, true);
-
-        if ($request->hasFile('product_image')){
-            if($order->product_image != 'product.png'){
-                $image_path = public_path($order->product_image);
-                if (File::exists($image_path)) {
-                    File::delete($image_path);
+        foreach ($request->products  as $product) {
+            if ( $product['qty'] > 0) {
+                $item_id = $this->checkProductOrder($items,$product['id']);
+                if ($item_id > 0) {
+                    $item = $this->getItemDataId($item_id);
+                    $item->qty = $product['qty'] + $item->qty;
+                    $item->total = $item->total + ($product['qty'] * $product['price']);
+                    $item->save();
+                }else{
+                    $item = new OrderItem();
+                    $item->order_id = $order->id;
+                    $item->product_id = $product['id'];
+                    $item->qty = $product['qty'];
+                    $item->total = $product['qty'] * $product['price'];
+                    $item->save();
                 }
             }
-            $imageName = time().'.'.request()->product_image->getClientOriginalExtension();
-            $request->product_image->move($pathImage, $imageName);
-            $order->product_image = $imageName;
         }
-
-        $order->save();
     }
 
     public function deleteData($id)
     {
         $order = $this->getDataId($id);
-        if($order->product_image != 'product.png'){
-            $image_path = public_path($order->product_image);
-            if (File::exists($image_path)) {
-                File::delete($image_path);
-            }
-        }
         $order->delete();
+    }
 
+    public function updateOrderQty($item_id,$request)
+    {
+        $item = $this->getItemDataId($item_id);
+        $product = Products::findOrfail($item->product_id);
+        $item->qty = $request->new_qty;
+        $item->total = $request->new_qty * $product->price;
+        $item->save();
+    }
+
+    public function deleteOrderItem($item_id)
+    {
+        $item = $this->getItemDataId($item_id);
+        $order = $this->getDataId($item->order_id);
+        $item->delete();
+        if (count($this->getOrderItemsData($order->id)) > 0) {
+            return 1;
+        }else{
+            $order->delete();
+            return 0;
+        }
+    }
+
+    public function changeOrderStatus($order,$status)
+    {
+        $order = $this->getDataId($order);
+        $order->status = $status;
+        $order->save();
     }
 }

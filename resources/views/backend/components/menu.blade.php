@@ -24,7 +24,7 @@
                 <!-- .nk-menu-item -->
                 <li class="nk-menu-item">
                     <a href="{{ route('home') }}" class="nk-menu-link">
-                        <span class="nk-menu-icon"><em class="icon ni ni-user-list"></em></span>
+                        <span class="nk-menu-icon"><em class="icon ni ni-home"></em></span>
                         <span class="nk-menu-text">{{ transWord('Home') }}</span>
                     </a>
                 </li>
@@ -36,7 +36,7 @@
                 @can('show_roles')
                 <li class="nk-menu-item">
                     <a href="{{ route('roles') }}" class="nk-menu-link">
-                        <span class="nk-menu-icon"><em class="icon ni ni-user-list"></em></span>
+                        <span class="nk-menu-icon"><em class="icon ni ni-lock-alt-fill"></em></span>
                         <span class="nk-menu-text">{{ transWord('Roles & Permissions') }}</span>
                     </a>
                 </li>
@@ -61,12 +61,12 @@
                         </li>
                         @endcan
                     </ul>
-                    <!-- .nk-menu-sub -->
+
                 </li>
 
                 <li class="nk-menu-item has-sub">
                     <a href="#" class="nk-menu-link nk-menu-toggle">
-                        <span class="nk-menu-icon"><em class="icon ni ni-users"></em></span>
+                        <span class="nk-menu-icon"><em class="icon ni ni-user-add"></em></span>
                         <span class="nk-menu-text">{{ transWord('User Follow') }}</span>
                     </a>
                     <ul class="nk-menu-sub">
@@ -80,7 +80,7 @@
 
                 <li class="nk-menu-item has-sub">
                     <a href="#" class="nk-menu-link nk-menu-toggle">
-                        <span class="nk-menu-icon"><em class="icon ni ni-users"></em></span>
+                        <span class="nk-menu-icon"><em class="icon ni ni-note-add-fill"></em></span>
                         <span class="nk-menu-text">{{ transWord('User Stories') }}</span>
                     </a>
                     <ul class="nk-menu-sub">
@@ -99,7 +99,47 @@
 
                 <li class="nk-menu-item has-sub">
                     <a href="#" class="nk-menu-link nk-menu-toggle">
-                        <span class="nk-menu-icon"><em class="icon ni ni-users"></em></span>
+                        <span class="nk-menu-icon"><em class="icon ni ni-file-text"></em></span>
+                        <span class="nk-menu-text">{{ transWord('Posts') }}</span>
+                    </a>
+                    <ul class="nk-menu-sub">
+                        @can('create_blogs')
+                        <li class="nk-menu-item">
+                            <a href="{{ route('create_blogs') }}" class="nk-menu-link"><span class="nk-menu-text">{{ transWord('New Post') }}</span></a>
+                        </li>
+                        @endcan
+                        @can('show_blogs')
+                        <li class="nk-menu-item">
+                            <a href="{{ route('blogs') }}" class="nk-menu-link"><span class="nk-menu-text">{{ transWord('All Posts') }}</span></a>
+                        </li>
+                        @endcan
+                    </ul>
+
+                </li>
+
+                <li class="nk-menu-item has-sub">
+                    <a href="#" class="nk-menu-link nk-menu-toggle">
+                        <span class="nk-menu-icon"><em class="icon ni ni-chat-circle-fill"></em></span>
+                        <span class="nk-menu-text">{{ transWord('Chat') }}</span>
+                    </a>
+                    <ul class="nk-menu-sub">
+                        @can('my_chats')
+                        <li class="nk-menu-item">
+                            <a href="{{ route('my_chats') }}" class="nk-menu-link"><span class="nk-menu-text">{{ transWord('My Chats') }}</span></a>
+                        </li>
+                        @endcan
+                        @can('show_chats')
+                        <li class="nk-menu-item">
+                            <a href="{{ route('chats') }}" class="nk-menu-link"><span class="nk-menu-text">{{ transWord('All Chats') }}</span></a>
+                        </li>
+                        @endcan
+                    </ul>
+
+                </li>
+
+                <li class="nk-menu-item has-sub">
+                    <a href="#" class="nk-menu-link nk-menu-toggle">
+                        <span class="nk-menu-icon"><em class="icon ni ni-b-uc"></em></span>
                         <span class="nk-menu-text">{{ transWord('Pets') }}</span>
                     </a>
                     <ul class="nk-menu-sub">
@@ -115,12 +155,12 @@
                         </li>
                         @endcan
                     </ul>
-                    <!-- .nk-menu-sub -->
+
                 </li>
 
                 <li class="nk-menu-item has-sub">
                     <a href="#" class="nk-menu-link nk-menu-toggle">
-                        <span class="nk-menu-icon"><em class="icon ni ni-users"></em></span>
+                        <span class="nk-menu-icon"><em class="icon ni ni-card-view"></em></span>
                         <span class="nk-menu-text">{{ transWord('Products') }}</span>
                     </a>
                     <ul class="nk-menu-sub">
@@ -136,12 +176,12 @@
                         </li>
                         @endcan
                     </ul>
-                    <!-- .nk-menu-sub -->
+
                 </li>
 
                 <li class="nk-menu-item has-sub">
                     <a href="#" class="nk-menu-link nk-menu-toggle">
-                        <span class="nk-menu-icon"><em class="icon ni ni-users"></em></span>
+                        <span class="nk-menu-icon"><em class="icon ni ni-file-docs"></em></span>
                         <span class="nk-menu-text">{{ transWord('Orders') }}</span>
                     </a>
                     <ul class="nk-menu-sub">
@@ -157,34 +197,12 @@
                         </li>
                         @endcan
                     </ul>
-                    <!-- .nk-menu-sub -->
-                </li>
 
-
-                <!-- .nk-menu-heading -->
-                <li class="nk-menu-item has-sub">
-                    <a href="#" class="nk-menu-link nk-menu-toggle">
-                        <span class="nk-menu-icon"><em class="icon ni ni-users"></em></span>
-                        <span class="nk-menu-text">{{ transWord('Posts') }}</span>
-                    </a>
-                    <ul class="nk-menu-sub">
-                        @can('create_blogs')
-                        <li class="nk-menu-item">
-                            <a href="{{ route('create_blogs') }}" class="nk-menu-link"><span class="nk-menu-text">{{ transWord('New Post') }}</span></a>
-                        </li>
-                        @endcan
-                        @can('show_blogs')
-                        <li class="nk-menu-item">
-                            <a href="{{ route('blogs') }}" class="nk-menu-link"><span class="nk-menu-text">{{ transWord('All Posts') }}</span></a>
-                        </li>
-                        @endcan
-                    </ul>
-                    <!-- .nk-menu-sub -->
                 </li>
 
                 <li class="nk-menu-item has-sub">
                     <a href="#" class="nk-menu-link nk-menu-toggle">
-                        <span class="nk-menu-icon"><em class="icon ni ni-users"></em></span>
+                        <span class="nk-menu-icon"><em class="icon ni ni-file-plus"></em></span>
                         <span class="nk-menu-text">{{ transWord('Pages') }}</span>
                     </a>
                     <ul class="nk-menu-sub">
@@ -199,14 +217,14 @@
                         </li>
                         @endcan
                     </ul>
-                    <!-- .nk-menu-sub -->
+
                 </li>
 
 
                 <li class="nk-menu-item">
                     @can('show_settings')
                     <a href="{{ route('mainsettings') }}" class="nk-menu-link">
-                        <span class="nk-menu-icon"><em class="icon ni ni-user-list"></em></span>
+                        <span class="nk-menu-icon"><em class="icon ni ni-setting-alt"></em></span>
                         <span class="nk-menu-text">{{ transWord('Main Settings') }}</span>
                     </a>
                     @endcan

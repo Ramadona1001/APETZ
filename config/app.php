@@ -188,6 +188,7 @@ return [
         UserStories\Providers\UserStoriesServiceProvider::class,
         Products\Providers\ProductsServiceProvider::class,
         Orders\Providers\OrdersServiceProvider::class,
+        Messages\Providers\MessagesServiceProvider::class,
 
     ],
 

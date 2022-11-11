@@ -98,11 +98,6 @@ function checkIfLinkyouTube($url){
 
 function statisticsWidget($data){
     $statisticsHtml = '';
-
-
-
-
-
     for ($i=0; $i < count($data); $i++) {
         ($data[$i][3] == '') ? $data[$i][3] = 'azura' : $data[$i][3] = $data[$i][3];
         if (hasPermissionsStatistics($data[$i][4]) != 'hasnot' && hasPermissionsStatistics($data[$i][4]) != 'notfound') {

@@ -50,7 +50,8 @@
             "Blogs\\": "app/Modules/Blogs/",
             "UserStories\\": "app/Modules/UserStories/",
             "Products\\": "app/Modules/Products/",
-            "Orders\\": "app/Modules/Orders/"
+            "Orders\\": "app/Modules/Orders/",
+            "Messages\\": "app/Modules/Messages/"
 
 
         },
